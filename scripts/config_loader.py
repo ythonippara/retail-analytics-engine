@@ -26,3 +26,8 @@ def load_config(config_path=CONFIG_PATH):
         raise FileNotFoundError(f"Configuration file not found: {config_path}")
     except json.JSONDecodeError:
         raise ValueError(f"Error decoding JSON in: {config_path}")
+    
+def get_files_to_process():
+    """Retrieve the list of files to process from config.json."""
+    config = load_config()
+    return config.get("files_to_process", [])  # Return an empty list if key is missing

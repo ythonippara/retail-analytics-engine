@@ -2,7 +2,7 @@ import os
 import pandas as pd
 from config_loader import load_config # Import config loader
 
-def save_cleaned_data(df, file_name):
+def write_df_to_csv(df, file_name):
     """
     Save a cleaned DataFrame as a CSV file in the clean directory from config.json.
     

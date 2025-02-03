@@ -1,6 +1,7 @@
 {
     "zip_url": "https://github.com/ythonippara/retail-analytics-engine/raw/main/data/Data%20Science%20and%20Engineering%20Assignment%20Datasets.zip",
     "zip_path": "data.zip",
-    "extracted_to": "data\\raw",
-    "processed_to": "data\\clean"
+    "extracted_to": "data/raw",
+    "processed_to": "data/clean",
+    "files_to_process": ["item.csv", "promotion.csv", "sales.csv", "supermarkets.csv"]
 }
