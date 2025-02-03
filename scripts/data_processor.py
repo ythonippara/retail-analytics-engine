@@ -109,15 +109,15 @@ def clean_sales_data(df):
     }, inplace=True)
     
     # Function to convert integer to time
-    def int_to_time(time_int):
-        """Converts an integer (HHMM format) to a time object"""
-        time_str = f'{time_int:04}'  # Zero-pad to ensure 4 digits
-        time_obj = datetime.strptime(time_str, '%H%M')
-        return time_obj.time()
+    #def int_to_time(time_int):
+        #"""Converts an integer (HHMM format) to a time object"""
+        #time_str = f'{time_int:04}'  # Zero-pad to ensure 4 digits
+        #time_obj = datetime.strptime(time_str, '%H%M')
+        #return time_obj.time()
 
     # Apply the function to the 'time' column if it exists
-    if 'time' in df.columns:
-        df['time'] = df['time'].apply(int_to_time)
+    #if 'time' in df.columns:
+        #df['time'] = df['time'].apply(int_to_time)
 
     return df
 

@@ -1,14 +1,24 @@
+import os
 from file_reader import load_csv_to_df
 from file_writer import write_df_to_csv
 from data_processor import CLEANING_FUNCTIONS
 from config_loader import get_files_to_process  # Import the function
 from file_extractor import extract_files  # Import file extractor
+from sales_predictor import run_sales_prediction
 
-def process_file(file_name):
+
+def process_file(file_name, folder):
     """Read, clean, and save a specific file based on its type."""
     try:
-        # Read raw data
-        df = load_csv_to_df(file_name)
+        file_path = os.path.join(folder, file_name)
+
+        # If file is missing, extract files again
+        if not os.path.exists(file_path):
+            print(f"File {file_name} is missing. Re-extracting files...")
+            extract_files()
+         
+        # Load the CSV after extraction
+        df = load_csv_to_df(file_name, folder)
 
         # Get appropriate cleaning function
         cleaning_function = CLEANING_FUNCTIONS.get(file_name)
@@ -27,14 +37,16 @@ def process_file(file_name):
 
 def main():
     """Main script to extract and process multiple CSV files."""
-    extracted_files = extract_files()  # Extract ZIP files before processing
+    folder = "data/raw"
+
     files_to_process = get_files_to_process() # Load from config.json
 
     for file_name in files_to_process:
-        if file_name in extracted_files:
-            process_file(file_name)
-        else:
-            print(f"Skipping {file_name}, as it was not extracted.")
+        process_file(file_name, folder)
+
+    # **Call sales predictor after processing**
+    print("\nRunning Sales Predictor...")
+    run_sales_prediction()  # Call the function
 
 if __name__ == "__main__":
     main()

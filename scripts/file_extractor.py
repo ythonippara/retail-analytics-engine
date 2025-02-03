@@ -67,8 +67,9 @@ def extract_files():
     download_zip(zip_url, zip_path)
     extracted_files = extract_zip(zip_path, extracted_to)
     
-    os.remove(zip_path)
-    print(f"Deleted ZIP file: {zip_path}")
+    if extracted_files:  # Delete only if extraction was successful
+        os.remove(zip_path)
+        print(f"Deleted ZIP file: {zip_path}")
 
     # Return the list of extracted files (without full path, just file names)
     return [os.path.basename(file) for file in extracted_files]
