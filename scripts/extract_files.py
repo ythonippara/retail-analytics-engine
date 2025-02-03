@@ -1,29 +1,24 @@
-import zipfile
 import os
+import zipfile
 import requests
-import json
+from config_loader import load_config
 
-# Load configuration from config/config.json
-def load_config(config_file="config/config.json"):
-    """Load configuration from a JSON file."""
-    with open(config_file, 'r') as file:
-        return json.load(file)
-
-# Function to download the ZIP file
-def download_zip(url, save_path):
+def download_zip(url: str, save_path: str):
     """Download ZIP file from a given URL and save it locally."""
-    response = requests.get(url, stream=True)
-    if response.status_code == 200:
+    try:
+        response = requests.get(url, stream=True)
+        response.raise_for_status()
+        
         with open(save_path, 'wb') as file:
             for chunk in response.iter_content(chunk_size=8192):
                 file.write(chunk)
         print(f"Downloaded ZIP file to {save_path}")
-    else:
-        print(f"Failed to download file, Status Code: {response.status_code}")
+    except requests.RequestException as e:
+        print(f"Failed to download file: {e}")
         exit(1)
 
 # Extract the ZIP file while skipping intermediary folders
-def extract_zip(zip_path, extract_to):
+def extract_zip(zip_path: str, extract_to: str):
     extract_to = os.path.normpath(extract_to)  # Normalize the extraction path for OS compatibility
     os.makedirs(extract_to, exist_ok=True)  # Ensure 'raw/' exists
 
@@ -49,19 +44,25 @@ def extract_zip(zip_path, extract_to):
 
     print(f"Extracted files to: {extract_to}")
 
-if __name__ == "__main__":
-    # Load config values from config/config.json
-    config = load_config("config/config.json")
+def main():
+    # Call load_config function and save to variable
+    config = load_config()
 
     # Extract values from config
-    zip_url = config["zip_url"]
-    zip_path = config["zip_path"]
-    extract_to = os.path.normpath(config["extract_to"])  # Fix Windows path issue
+    zip_url = config.get("zip_url")
+    zip_path = config.get("zip_path")
+    extract_to = os.path.normpath(config.get("extract_to", "data/raw")) # Fix Windows path issue
+    
+    if not zip_url or not zip_path:
+        print("Missing required configuration keys: 'zip_url' and 'zip_path'")
+        exit(1)
 
     # Run the script with config values
     download_zip(zip_url, zip_path)
     extract_zip(zip_path, extract_to)
-
-    # Optionally delete the ZIP file after extraction
+    
     os.remove(zip_path)
     print(f"Deleted ZIP file: {zip_path}")
+
+if __name__ == "__main__":
+    main()
