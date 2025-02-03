@@ -2,6 +2,7 @@ from file_reader import load_csv_to_df
 from file_writer import write_df_to_csv
 from data_processor import CLEANING_FUNCTIONS
 from config_loader import get_files_to_process  # Import the function
+from file_extractor import extract_files  # Import file extractor
 
 def process_file(file_name):
     """Read, clean, and save a specific file based on its type."""
@@ -25,11 +26,15 @@ def process_file(file_name):
         print(f"Error processing {file_name}: {e}")
 
 def main():
-    """Main script to process multiple CSV files."""
-    files_to_process = get_files_to_process()  # Load from config.json
+    """Main script to extract and process multiple CSV files."""
+    extracted_files = extract_files()  # Extract ZIP files before processing
+    files_to_process = get_files_to_process() # Load from config.json
 
     for file_name in files_to_process:
-        process_file(file_name)
+        if file_name in extracted_files:
+            process_file(file_name)
+        else:
+            print(f"Skipping {file_name}, as it was not extracted.")
 
 if __name__ == "__main__":
     main()

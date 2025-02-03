@@ -3,5 +3,6 @@
     "zip_path": "data.zip",
     "extracted_to": "data/raw",
     "processed_to": "data/clean",
-    "files_to_process": ["item.csv", "promotion.csv", "sales.csv", "supermarkets.csv"]
+    "files_to_process": ["item.csv", "promotion.csv", "sales.csv", "supermarkets.csv"],
+    "file_suffix": "_processed"
 }

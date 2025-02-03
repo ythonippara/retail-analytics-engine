@@ -1,5 +1,7 @@
 import pandas as pd
 import numpy as np
+from datetime import datetime
+
 
 def clean_items_data(items):
     """
@@ -91,25 +93,38 @@ def clean_items_data(items):
 
 def clean_promotions_data(df):
     """Cleaning function for promotions.csv"""
-    df.rename(columns={'promo_id': 'promotion_id', 'start': 'start_date', 'end': 'end_date'}, inplace=True)
-    
-    df["discount_amount"] = df["discount_amount"].replace('', 0).astype(float)
-    
+    # Rename the columns
+    df.rename(columns={"code": "item_code", "supermarkets": "supermarket_code"}, inplace=True)
+
     return df
 
 def clean_sales_data(df):
     """Cleaning function for sales.csv"""
-    df.rename(columns={'sale_id': 'transaction_id', 'amt': 'sale_amount'}, inplace=True)
+    df.rename(columns={
+        'code': 'item_code',
+        'amount': 'transaction_amount',
+        'units': 'quantity',
+        'supermarket': 'supermarket_code',
+        'customerId': 'customer_id'
+    }, inplace=True)
+    
+    # Function to convert integer to time
+    def int_to_time(time_int):
+        """Converts an integer (HHMM format) to a time object"""
+        time_str = f'{time_int:04}'  # Zero-pad to ensure 4 digits
+        time_obj = datetime.strptime(time_str, '%H%M')
+        return time_obj.time()
 
-    df["sale_amount"] = df["sale_amount"].astype(float)
+    # Apply the function to the 'time' column if it exists
+    if 'time' in df.columns:
+        df['time'] = df['time'].apply(int_to_time)
 
     return df
 
 def clean_supermarkets_data(df):
     """Cleaning function for supermarkets.csv"""
-    df.rename(columns={'store_id': 'supermarket_id', 'region': 'location_region'}, inplace=True)
-    
-    df["is_active"] = df["is_active"].astype(bool)
+    # Standardize column names
+    df.rename(columns={"supermarket_No": "supermarket_code", "postal-code": "postal_code"}, inplace=True)
 
     return df
 

@@ -28,6 +28,7 @@ def extract_zip(zip_path: str, extracted_to: str):
         # Remove any trailing slashes or backslashes, ensuring correct path handling.
         common_prefix = os.path.commonprefix(zip_ref.namelist()).strip("/").strip("\\")
         
+        extracted_files = []  # List to track extracted files
         for member in zip_ref.namelist():
             if member.endswith("/"):  # Skip directories
                 continue
@@ -41,28 +42,36 @@ def extract_zip(zip_path: str, extracted_to: str):
             # Read the file content from the ZIP archive and write it to the target location.
             with zip_ref.open(member) as source, open(target_path, "wb") as target:
                 target.write(source.read())
+            
+            extracted_files.append(target_path)  # Add to the list
 
     print(f"Extracted files to: {extracted_to}")
+    return extracted_files  # Return extracted file names
 
-def main():
-    # Call load_config function and save to variable
+def extract_files():
+    """
+    Main function to extract files as part of the pipeline.
+    Returns a list of extracted files.
+    """
+    # Read config.json
     config = load_config()
-
-    # Extract values from config
     zip_url = config.get("zip_url")
     zip_path = config.get("zip_path")
-    extracted_to = os.path.normpath(config.get("extracted_to", "data/raw")) # Fix Windows path issue
-    
+    extracted_to = os.path.normpath(config.get("extracted_to", "data/raw"))  # Normalize path
+
     if not zip_url or not zip_path:
         print("Missing required configuration keys: 'zip_url' and 'zip_path'")
         exit(1)
 
-    # Run the script with config values
+    # Download and extract files
     download_zip(zip_url, zip_path)
-    extract_zip(zip_path, extracted_to)
+    extracted_files = extract_zip(zip_path, extracted_to)
     
     os.remove(zip_path)
     print(f"Deleted ZIP file: {zip_path}")
 
+    # Return the list of extracted files (without full path, just file names)
+    return [os.path.basename(file) for file in extracted_files]
+
 if __name__ == "__main__":
-    main()
+    extract_files()
