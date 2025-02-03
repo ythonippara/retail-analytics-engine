@@ -20,15 +20,34 @@ def download_zip(url, save_path):
         print(f"Downloaded ZIP file to {save_path}")
     else:
         print(f"Failed to download file, Status Code: {response.status_code}")
+        exit(1)
 
-# Function to extract ZIP file
+# Extract the ZIP file while skipping intermediary folders
 def extract_zip(zip_path, extract_to):
-    """Extract a ZIP file to the specified folder."""
-    if not os.path.exists(extract_to):
-        os.makedirs(extract_to)
-    with zipfile.ZipFile(zip_path, 'r') as zip_ref:
-        zip_ref.extractall(extract_to)
-    print(f"Files extracted to {extract_to}")
+    extract_to = os.path.normpath(extract_to)  # Normalize the extraction path for OS compatibility
+    os.makedirs(extract_to, exist_ok=True)  # Ensure 'raw/' exists
+
+    with zipfile.ZipFile(zip_path, 'r') as zip_ref: # Open the ZIP file in read mode.
+        # Use zip_ref.namelist()  to retrieve the list of files and folders inside the ZIP.
+        # Find the longest common path prefix.
+        # Remove any trailing slashes or backslashes, ensuring correct path handling.
+        common_prefix = os.path.commonprefix(zip_ref.namelist()).strip("/").strip("\\")
+        
+        for member in zip_ref.namelist():
+            if member.endswith("/"):  # Skip directories
+                continue
+
+            # Remove the common prefix so that files are extracted directly
+            member_path = member[len(common_prefix) + 1:] if member.startswith(common_prefix) else member
+            # Construct the new target file path in the extract_to directory.
+            target_path = os.path.join(extract_to, member_path)
+            os.makedirs(os.path.dirname(target_path), exist_ok=True)
+
+            # Read the file content from the ZIP archive and write it to the target location.
+            with zip_ref.open(member) as source, open(target_path, "wb") as target:
+                target.write(source.read())
+
+    print(f"Extracted files to: {extract_to}")
 
 if __name__ == "__main__":
     # Load config values from config/config.json
@@ -37,7 +56,7 @@ if __name__ == "__main__":
     # Extract values from config
     zip_url = config["zip_url"]
     zip_path = config["zip_path"]
-    extract_to = config["extract_to"]
+    extract_to = os.path.normpath(config["extract_to"])  # Fix Windows path issue
 
     # Run the script with config values
     download_zip(zip_url, zip_path)

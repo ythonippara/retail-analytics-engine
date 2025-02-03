@@ -169,3 +169,7 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# Ignore raw and cleaned data files
+data/raw/
+data/clean/
