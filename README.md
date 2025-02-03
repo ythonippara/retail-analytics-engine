@@ -10,7 +10,7 @@ First, clone the repository to your local machine:
 ```sh
 git clone https://github.com/ythonippara/retail-analytics-engine.git
 cd retail-analytics-engine
-```
+
 
 ### 2. Create a Virtual Environment
 
@@ -20,19 +20,15 @@ For Windows (PowerShell):
 
     ```sh
     python -m venv venv
-    ```
-    ```sh
     venv\Scripts\Activate
-    ```
+
 
 For macOS/Linux:
 
     ```sh
     python3 -m venv venv
-    ```
-    ```sh
     source venv/bin/activate
-    ```
+
 
 ### 3. Install Dependencies
 
@@ -41,7 +37,7 @@ Once the virtual environment is activated, install the required Python packages:
 
     ```sh
     pip install -r requirements.txt
-    ```
+
 
 ### 4. Configure the Project
 
@@ -55,7 +51,7 @@ Example:
         "clean_data_path": "data/clean/",
         "log_file": "logs/processing.log"
     }
-    ```
+
 
 ### 5. Run the Data Pipeline
 
@@ -64,15 +60,15 @@ Finally, the script will call sales_predictor.py to futher preprocess data, spli
 
     ```sh
     python scripts/pipeline_runner.py
-    ```
 
-### 6. Run tests on some functions
+
+### 6. Run tests on Functions
 
 Run test on clean_items_data function using command below:
 
     ```sh
     python -m tests.test_clean_items
-    ```
+
 
 ### 7. Use Jupyter Notebooks for Exploraroty Data Analysis (EDA)
 
@@ -80,13 +76,13 @@ To explore and analyze data interactively, launch Jupyter Lab:
 
     ```sh
     jupyter lab
-    ```
+
 
 ### 8. Deactivate Virtual Environment (When Done)
 
     ```sh
     deactivate
-    ```
+
 
 
 
