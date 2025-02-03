@@ -1,0 +1,5 @@
+{
+    "zip_url": "https://github.com/ythonippara/retail-analytics-engine/raw/main/data/Data%20Science%20and%20Engineering%20Assignment%20Datasets.zip",
+    "zip_path": "data.zip",
+    "extract_to": "data\\raw"
+}
